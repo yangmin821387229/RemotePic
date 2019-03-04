@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -14,7 +15,7 @@ namespace RemotePic
 {
     public partial class FormMain : Form
     {
-        private string picDir = @"F:\Code\RemotePic\RemotePic\bin\Debug\pics\";
+        private string picDir = @"pics\";
         private int imageIndex = 1;
 
         public FormMain()
@@ -35,15 +36,20 @@ namespace RemotePic
             Send(imgLocation);
         }
 
+        private string GetServerIp()
+        {
+            return ConfigurationManager.AppSettings.Get("serverIp");
+        }
+
         private string LoadPic()
         {
-            return Path.Combine(picDir,GetImageName());
+            return Path.Combine(Directory.GetCurrentDirectory(),picDir,GetImageName());
         }
 
         private void Send(string imgLocation)
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect("127.0.0.1", 2019);
+            socket.Connect(GetServerIp(), 2019);
             using (var stream = new FileStream(imgLocation, FileMode.Open, FileAccess.Read))
             {
 
@@ -81,7 +87,7 @@ namespace RemotePic
             string imgLocation = LoadPic();
             this.pbMain.ImageLocation = imgLocation;
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect("127.0.0.1", 2019);
+            socket.Connect(GetServerIp(), 2019);
             using (var stream = new FileStream(imgLocation, FileMode.Open, FileAccess.Read))
             {
 
@@ -121,7 +127,7 @@ namespace RemotePic
             string imgLocation = LoadPic();
             this.pbMain.ImageLocation = imgLocation;
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect("127.0.0.1", 2019);
+            socket.Connect(GetServerIp(), 2019);
             using (var stream = new FileStream(imgLocation, FileMode.Open, FileAccess.Read))
             {
 
@@ -165,7 +171,7 @@ namespace RemotePic
             }
             this.pbMain.ImageLocation = imgLocation;
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect("127.0.0.1", 2019);
+            socket.Connect(GetServerIp(), 2019);
             using (var stream = new FileStream(imgLocation, FileMode.Open, FileAccess.Read))
             {
 
